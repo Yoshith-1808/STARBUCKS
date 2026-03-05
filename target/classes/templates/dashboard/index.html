@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container-fluid py-4 px-4 flex-grow-1">
+    <!-- Welcome Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient border-0 shadow-sm dashboard-banner">
+                <div class="card-body p-4 text-white">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="fw-bold mb-1">Welcome back, <span
+                                    th:text="${user.firstName != null ? user.firstName : user.username}">User</span>!
+                                👋</h3>
+                            <p class="mb-0 opacity-75">Your vault is secure and protected with AES-256 encryption.
+                            </p>
+                        </div>
+                        <i class="bi bi-shield-check-fill" style="font-size:4rem; opacity:0.3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 border-start border-primary border-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Total Passwords</p>
+                            <h2 class="fw-bold mb-0 text-primary" th:text="${totalPasswords}">0</h2>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-key-fill text-primary fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 border-start border-warning border-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Favorites</p>
+                            <h2 class="fw-bold mb-0 text-warning" th:text="${favoriteCount}">0</h2>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-star-fill text-warning fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 border-start border-success border-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">Categories Used</p>
+                            <h2 class="fw-bold mb-0 text-success" th:text="${categoryCount}">0</h2>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-tags-fill text-success fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 border-start border-info border-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted small mb-1">2FA Status</p>
+                            <h2 class="fw-bold mb-0"
+                                th:class="${user.twoFactorEnabled} ? 'text-success' : 'text-danger'">
+                                <span th:text="${user.twoFactorEnabled} ? 'ON' : 'OFF'"></span>
+                            </h2>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-shield-lock-fill text-info fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions + Recent Entries -->
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 pt-3">
+                    <h5 class="fw-semibold mb-0"><i class="bi bi-lightning-fill text-warning me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a th:href="@{/vault/add}" class="btn btn-primary btn-glass-shiny">
+                            <i class="bi bi-plus-circle me-2"></i>Add New Password
+                        </a>
+                        <a th:href="@{/generator}" class="btn btn-outline-primary btn-glass-shiny">
+                            <i class="bi bi-shuffle me-2"></i>Generate Password
+                        </a>
+                        <a th:href="@{/vault/favorites}" class="btn btn-outline-warning btn-glass-shiny">
+                            <i class="bi bi-star me-2"></i>View Favorites
+                        </a>
+                        <a th:href="@{/security/audit}" class="btn btn-outline-danger btn-glass-shiny">
+                            <i class="bi bi-shield-exclamation me-2"></i>Security Audit
+                        </a>
+                        <a th:href="@{/vault}" class="btn btn-outline-secondary btn-glass-shiny">
+                            <i class="bi bi-grid-3x3-gap me-2"></i>View All Passwords
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-semibold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recently Added
+                    </h5>
+                    <a th:href="@{/vault}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(recentEntries)}" class="text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size:3rem"></i>
+                        <p class="text-muted mt-2">No passwords stored yet</p>
+                        <a th:href="@{/vault/add}" class="btn btn-primary btn-sm">Add Your First Password</a>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(recentEntries)}" class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Account</th>
+                                <th>Category</th>
+                                <th>Username</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="entry : ${recentEntries}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-2">
+                                            <i class="bi bi-globe text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium" th:text="${entry.accountName}"></div>
+                                            <small class="text-muted" th:text="${entry.websiteUrl}"></small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                            <span class="badge rounded-pill bg-secondary"
+                                                  th:text="${entry.category}"></span>
+                                </td>
+                                <td class="text-muted" th:text="${entry.usernameOrEmail}"></td>
+                                <td>
+                                    <a th:href="@{/vault/view/{id}(id=${entry.id})}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

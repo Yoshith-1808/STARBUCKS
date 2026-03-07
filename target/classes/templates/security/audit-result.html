@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Security Audit Results')}"></head>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container py-5 flex-grow-1">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-shield-check me-2"></i>Security Audit Results</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Overall Score Section -->
+                    <div class="text-center mb-4">
+                        <h1 class="display-1 fw-bold"
+                            th:classappend="${audit.overallGrade == 'A' ? 'text-success' : (audit.overallGrade == 'B' ? 'text-info' : (audit.overallGrade == 'C' ? 'text-warning' : 'text-danger'))}"
+                            th:text="${audit.overallGrade}">A</h1>
+                        <p class="lead text-muted">Overall Score: <span
+                                th:text="${audit.overallScore}">100</span>/100</p>
+                        <p class="text-muted small">Total Passwords Scanned: <strong
+                                th:text="${audit.totalPasswords}">0</strong></p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Stats Grid -->
+                    <div class="row text-center mb-4 g-3">
+                        <div class="col-4">
+                            <div class="p-3 border rounded bg-white shadow-sm h-100">
+                                <h3 class="text-success mb-1" th:text="${audit.strongPasswords}">0</h3>
+                                <small class="text-muted text-uppercase fw-bold"
+                                       style="font-size: 0.75rem;">Strong</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 border rounded bg-white shadow-sm h-100">
+                                <h3 class="text-warning mb-1" th:text="${audit.weakPasswords}">0</h3>
+                                <small class="text-muted text-uppercase fw-bold"
+                                       style="font-size: 0.75rem;">Weak</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 border rounded bg-white shadow-sm h-100">
+                                <h3 class="text-danger mb-1" th:text="${audit.reusedPasswords}">0</h3>
+                                <small class="text-muted text-uppercase fw-bold"
+                                       style="font-size: 0.75rem;">Reused</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weak Passwords List -->
+                    <div th:if="${audit.weakPasswords > 0}" class="alert alert-warning border-0 shadow-sm mb-3">
+                        <h5 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Weak
+                            Passwords Detected</h5>
+                        <p class="mb-2 small">The following accounts use weak passwords (e.g. they are too short or
+                            lack complexity). Consider generating stronger passwords for them:</p>
+                        <ul class="mb-0 small">
+                            <li th:each="account : ${audit.weakPasswordAccounts}" th:text="${account}"></li>
+                        </ul>
+                    </div>
+
+                    <!-- Reused Passwords List -->
+                    <div th:if="${audit.reusedPasswords > 0}" class="alert alert-danger border-0 shadow-sm mb-3">
+                        <h5 class="alert-heading fw-bold"><i class="bi bi-exclamation-octagon-fill me-2"></i>Reused
+                            Passwords Detected</h5>
+                        <p class="mb-2 small">You are using the exact same password for multiple accounts. If this
+                            password is compromised, all these accounts are at risk:</p>
+                        <ul class="mb-0 small">
+                            <li th:each="account : ${audit.reusedPasswordAccounts}" th:text="${account}"></li>
+                        </ul>
+                    </div>
+
+                    <!-- Perfect Score Success Message -->
+                    <div th:if="${audit.weakPasswords == 0 and audit.reusedPasswords == 0 and audit.totalPasswords > 0}"
+                         class="alert alert-success border-0 shadow-sm mb-3 text-center py-4">
+                        <h5 class="alert-heading fw-bold mb-3"><i class="bi bi-check-circle-fill me-2"
+                                                                  style="font-size: 2rem;"></i><br><br>Vault is Secure!</h5>
+                        <p class="mb-0">Great job! All your passwords are strong and unique. Keep it up!</p>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <a th:href="@{/vault}" class="btn btn-outline-primary px-4 fw-semibold">Return to Vault</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
